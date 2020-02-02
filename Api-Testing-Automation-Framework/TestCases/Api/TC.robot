@@ -18,8 +18,18 @@ TC1: Get all users first name and email (GET)
   should be equal             ${status_code}                    200
 
   # Multiple Data Validation
-  ${users}=                   get value from json               ${json_object}                              $.data[0]
-  log to console              ${users} 
+  ${first_names}=             get value from json         ${json_object}                       $..first_name
+  ${first_name_count}=        get length                  ${first_names}
+  ${first_name_count}=        convert to string           ${first_name_count}
+  ${emails}=                  get value from json         ${json_object}                       $..email
+  ${email_count}=             get length                  ${emails}
+  ${email_count}=             convert to string           ${email_count}
+  should be equal             ${first_name_count}         6
+  should contain any          ${first_names}              Michael  Lindsay  Tobias  Byron  George  Rachel
+  should be equal             ${email_count}              6
+  should contain any          ${emails}                   michael.lawson@reqres.in  lindsay.ferguson@reqres.in tobias.funke@reqres.in  byron.fields@reqres.in  george.edwards@reqres.in rachel.howell@reqres.in
+                                        
+
 
 TC2: Get a single user by id (GET)
   create session              mysession                         ${base_url}
