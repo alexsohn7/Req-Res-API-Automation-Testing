@@ -6,16 +6,20 @@ Library       os
 
 *** Variables ***
 ${base_url}                   https://reqres.in
+${page}                       2
 
 *** Test Cases ***
-TC1: Get all users first name and email (GET)
+TC1: Get all users first name and email (GET) on page 2
   create session              mysession                         ${base_url}
-  ${response}=                get request                       mysession                                   /api/users?page=2
+  ${response}=                get request                       mysession                             /api/users?page=${page}
   ${json_object}=             to json                           ${response.content}
 
   # Single Data Validation
   ${status_code}=             convert to string                 ${response.status_code}
   should be equal             ${status_code}                    200
+  ${response_page}=           get value from json               ${json_object}                        $.page
+  ${page}=                    convert to integer                ${page}
+  should be equal             ${response_page[0]}               ${page}
 
   # Multiple Data Validation
   ${first_names}=             get value from json         ${json_object}                       $..first_name
