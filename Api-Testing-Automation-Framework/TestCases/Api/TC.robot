@@ -8,13 +8,18 @@ Library       os
 ${base_url}                   https://reqres.in
 
 *** Test Cases ***
-TC1: Get all users (GET)
+TC1: Get all users first name and email (GET)
   create session              mysession                         ${base_url}
   ${response}=                get request                       mysession                                   /api/users?page=2
+  ${json_object}=             to json                           ${response.content}
 
-  # Validations
+  # Single Data Validation
   ${status_code}=             convert to string                 ${response.status_code}
   should be equal             ${status_code}                    200
+
+  # Multiple Data Validation
+  ${users}=                   get value from json               ${json_object}                              $.data[0]
+  log to console              ${users} 
 
 TC2: Get a single user by id (GET)
   create session              mysession                         ${base_url}
